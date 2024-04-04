@@ -1,0 +1,53 @@
+---
+title: "Movie Night Preliminary Plan"
+author: "Kelly, Judy"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# **Final Project**
+
+| Description     | Completion Date |
+|-----------------|-----------------|
+| Outline project | 4/4/2024        |
+| Select dataset  | 4/4/2024        |
+| Upload data.    | 4/4/2024        |
+| create reposit. | 4/4/2024        |
+| Research jargon | 4/11/2024       |
+| Write Intro.    | 4/11/2024       |
+| Organize data.  | 4/18/2024       |
+| Create graph.   | 4/18/2024       |
+
+\#***Task Details*** 
+
+--research IMDB definition research 
+
+--"meta_score" rating 
+
+--write first draft of the intro
+
+Questions from data we would like to start with:
+
+1. Which combination of actors gross the most ***
+
+2. What genre grosses the most
+
+3. How many actors are in the top 10 grossing movies 
+
+4. What year grossed the most
+
+5. Highest grossing actress
+
+6. Highest grossing actor
+
+7. Which director grossed the highest
+
+8. meta_score Grading vs gross
+
+9. IMDB rating vs gross
+
+10. Actors/ actresses that appeared the most in films 
