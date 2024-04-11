@@ -9,27 +9,51 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r}
+```{r echo = T, message=FALSE}
 library(tidyverse)
 library('knitr')
-my_imdb <- read.csv('imdb_top_1000.csv')
-view(my_imdb)
-rate_dir_gross <- my_imdb %>% select(IMDB_Rating,Director,Gross)
-kable(rate_dir_gross)
+Movie_1000 <- read_csv('Highest_Holywood_Grossing_Movies.csv')
+My_imdb <- read_csv('imdb_top_1000.csv')
+My_imdb$Released_Year <- as.numeric(My_imdb$Released_Year)
+class(My_imdb$Released_Year)
+
+My_imdb <- My_imdb %>% 
+  mutate(Runtime = str_split_i(Runtime, pattern = " ", 1),
+         Runtime = as.numeric(Runtime), 
+         Released_Year = as.numeric(Released_Year))
+
+movie_data <- full_join(Movie_1000, My_imdb, join_by("Title" == "Series_Title")) %>% arrange(Title)
+movie_data_inner <- inner_join(Movie_1000, My_imdb, join_by("Title" == "Series_Title"))
+
+
+
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+```{r}
+movie_data_inner %>% group_by(Year,Released_Year) %>% summarise(n =n()) %>% arrange(-n) %>% 
+  na.omit()
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+#movie_data[is.na(movie_data$Year), ]
+
+movie_data_inner %>% 
+  group_by(Released_Year) %>% 
+  summarise(n = n()) %>% 
+  arrange(-n) %>% 
+  na.omit()
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+```
+
+
+```{r}
+
+```
+
+
+
+

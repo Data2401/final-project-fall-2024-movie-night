@@ -1,0 +1,36 @@
+IMDB Code:
+my_imdb <- read_csv('imdb_top_1000.csv')
+unique(my_imdb$Released_Year)
+my_imdb %>% filter(Released_Year == "PG")
+
+my_imdb <- my_imdb %>% 
+  mutate(Runtime = str_split_i(Runtime, pattern = " ", 1),
+         Runtime = as.numeric(Runtime), 
+         Released_Year = as.numeric(Released_Year))
+
+glimpse(my_imdb)
+
+#Runtime, Gross, Released_Year is in 'characters'; converted to numeric
+#my_imdb$Runtime <- as.numeric(my_imdb$Runtime)
+my_imdb$Gross <- as.numeric(my_imdb$Gross)
+my_imdb$Released_Year <- as.numeric(my_imdb$Released_Year)
+class(my_imdb$Runtime)
+class(my_imdb$Gross)
+class(my_imdb$Released_Year)
+
+view(my_imdb)
+
+rate_dir_gross <- my_imdb %>% select(IMDB_Rating,Director,Gross) %>% arrange(desc(Director))
+kable(rate_dir_gross)
+
+actor_gross <- my_imdb %>% select(Series_Title, Gross, starts_with('star')) %>% 
+  arrange(Gross)
+kable(actor_gross)
+
+genre_gross <- my_imdb %>% select(Genre,Gross) %>% arrange(Gross)
+kable(genre_gross)
+
+my_imdb %>% select(Director, IMDB_Rating,Gross) %>% filter(IMDB_Rating > 8.5) %>% 
+  ggplot()+
+  aes(x = IMDB_Rating, y = Gross, color = Director)+
+  geom_point()
