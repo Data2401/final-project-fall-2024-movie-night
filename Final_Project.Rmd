@@ -11,13 +11,18 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-```{r echo = T, message=FALSE}
+```{r echo = F, message=FALSE}
 library(tidyverse)
 library('knitr')
+library('quantreg')
 Movie_1000 <- read_csv('Highest_Holywood_Grossing_Movies.csv')
 My_imdb <- read_csv('imdb_top_1000.csv')
 My_imdb$Released_Year <- as.numeric(My_imdb$Released_Year)
-class(My_imdb$Released_Year)
+Movie_1000$`Budget (in $)`<- as.numeric(Movie_1000$`Budget (in $)`)
+Movie_1000$`Domestic Sales (in $)`<- as.numeric(Movie_1000$`Domestic Sales (in $)`)
+Movie_1000$`Domestisc Opening (in $)` <- as.numeric(Movie_1000$`Domestic Opening (in $)`)
+
+#class(My_imdb$Released_Year)
 
 My_imdb <- My_imdb %>% 
   mutate(Runtime = str_split_i(Runtime, pattern = " ", 1),
@@ -25,35 +30,93 @@ My_imdb <- My_imdb %>%
          Released_Year = as.numeric(Released_Year))
 
 movie_data <- full_join(Movie_1000, My_imdb, join_by("Title" == "Series_Title")) %>% arrange(Title)
-movie_data_inner <- inner_join(Movie_1000, My_imdb, join_by("Title" == "Series_Title"))
+movie_data_inner <- inner_join(Movie_1000, My_imdb, join_by("Title" == "Series_Title")) %>% filter(Released_Year > 1986)
 
-
+movie_data_inner <- rename(movie_data_inner,'domestic_sales' = 'Domestic Sales (in $)')
+movie_data_inner <- rename(movie_data_inner,'international_sales' = 'International Sales (in $)')
+movie_data_inner <- rename(movie_data_inner, 'budget' = 'Budget (in $)')
+movie_data_inner <- rename(movie_data_inner, 'domestic_opening' = 'Domestic Opening (in $)')
+movie_data_inner$domestic_opening <- as.numeric(movie_data_inner$domestic_opening)
+#glimpse(movie_data_inner)
 
 
 ```
+***Release Dates***
 
+```{r echo = F, message=FALSE}
+#movie_data_inner %>% group_by(Year,Released_Year) %>% summarise(n =n()) %>% arrange(-n) %>% 
+  #na.omit()
 
-```{r}
-movie_data_inner %>% group_by(Year,Released_Year) %>% summarise(n =n()) %>% arrange(-n) %>% 
+released <- movie_data_inner %>% 
+  group_by(Released_Year) %>%  
+  summarise(Count = n()) %>% 
+  arrange(-Count) %>% 
   na.omit()
 
-#movie_data[is.na(movie_data$Year), ]
+kable(released)
+
+```
+***Sales per Release Year***
+
+```{r echo = F, message=FALSE}
+movie_data_inner %>% 
+  ggplot()+
+  aes(domestic_sales, international_sales, color = Released_Year)+
+  geom_point(na.rm = TRUE, alpha = .5)
 
 movie_data_inner %>% 
-  group_by(Released_Year) %>% 
-  summarise(n = n()) %>% 
-  arrange(-n) %>% 
-  na.omit()
+  ggplot() +
+  aes(x = Released_Year,
+      y = domestic_sales) +
+  geom_col(na.rm = TRUE, alpha = .5)
+movie_data_inner %>% 
+  ggplot() +
+  aes(x = Released_Year,
+      y = international_sales) +
+  geom_col(na.rm = TRUE, alpha = .5)
+
+
+movie_data_inner %>% ggplot(aes(x = Released_Year)) + geom_histogram()
 ```
 
-```{r}
+***Sales per Budget***
+
+```{r echo = F, message=FALSE}
+movie_data_inner %>% 
+  ggplot()+
+  aes(domestic_sales, international_sales, color = budget)+
+  geom_point(na.rm = TRUE, alpha = .5)
+
+movie_data_inner %>% 
+  ggplot() +
+  aes(x = budget,
+      y = domestic_sales) +
+  geom_col(na.rm = TRUE, alpha = .5, position = 'dodge')
+
+movie_data_inner %>% 
+  ggplot() +
+  aes(x = budget,
+      y = international_sales) +
+  geom_col(na.rm = TRUE, alpha = .5, position = 'dodge')
 ```
+***Domestic vs. International Sales***
 
+```{r echo = F, message=FALSE}
+movie_data_inner %>% 
+  ggplot() +
+  aes(x = domestic_sales,
+      y = international_sales) +
+  geom_smooth(na.rm = TRUE)
+  
+movie_data_inner %>% 
+  ggplot()+
+  aes(domestic_sales,domestic_opening)+
+  geom_step(na.rm = TRUE)
 
-```{r}
+sales_kabble <- movie_data_inner %>% select(Title, domestic_sales, international_sales) %>% head(5)
 
+kable(sales_kabble)
+  
 ```
-
-
-
+***Distribution***
 
