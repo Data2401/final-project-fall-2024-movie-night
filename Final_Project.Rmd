@@ -36,14 +36,17 @@ movie_data_inner <- rename(movie_data_inner,'domestic_sales' = 'Domestic Sales (
 movie_data_inner <- rename(movie_data_inner,'international_sales' = 'International Sales (in $)')
 movie_data_inner <- rename(movie_data_inner, 'budget' = 'Budget (in $)')
 movie_data_inner <- rename(movie_data_inner, 'domestic_opening' = 'Domestic Opening (in $)')
+movie_data_inner <- rename(movie_data_inner, 'world_wide_sales' ='World Wide Sales (in $)')
 movie_data_inner$domestic_opening <- as.numeric(movie_data_inner$domestic_opening)
 #glimpse(movie_data_inner)
 
 
 ```
+
 ***Release Dates***
 
-```{r echo = F, message=FALSE}
+
+```{r echo = F, message=FALSE, fig.width=10}
 #movie_data_inner %>% group_by(Year,Released_Year) %>% summarise(n =n()) %>% arrange(-n) %>% 
   #na.omit()
 
@@ -58,7 +61,8 @@ kable(released)
 ```
 ***Sales per Release Year***
 
-```{r echo = F, message=FALSE}
+
+```{r echo = F, message=FALSE, fig.width=10}
 movie_data_inner %>% 
   ggplot()+
   aes(domestic_sales, international_sales, color = Released_Year)+
@@ -81,6 +85,7 @@ movie_data_inner %>% ggplot(aes(x = Released_Year)) + geom_histogram()
 
 ***Sales per Budget***
 
+
 ```{r echo = F, message=FALSE}
 movie_data_inner %>% 
   ggplot()+
@@ -101,7 +106,8 @@ movie_data_inner %>%
 ```
 ***Domestic vs. International Sales***
 
-```{r echo = F, message=FALSE}
+
+```{r echo = F, message=FALSE, fig.width=10}
 movie_data_inner %>% 
   ggplot() +
   aes(x = domestic_sales,
@@ -119,4 +125,22 @@ kable(sales_kabble)
   
 ```
 ***Distribution***
+
+
+```{r echo = F, message=FALSE, fig.width=10}
+movie_data_inner %>% select(world_wide_sales,Distributor)%>% head(10) %>% 
+  ggplot()+
+  aes(world_wide_sales, Distributor)+
+  geom_col()
+
+highest_sales_per_year <- movie_data_inner %>% select(Distributor,Released_Year, world_wide_sales) %>% group_by(Distributor) %>% arrange(-Released_Year, -world_wide_sales) %>% head(5)
+  
+kable(highest_sales_per_year)
+
+movie_data_inner %>% group_by(Director) %>% head(10) %>% 
+  ggplot()+
+  aes(Director, fill = Distributor)+
+  geom_bar()
+```
+
 
