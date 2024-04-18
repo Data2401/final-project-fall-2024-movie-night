@@ -1,8 +1,8 @@
 ---
-title: "Final Project"
+title: "Movie Night"
 author: "Kelly Thackeray, Judy Camarena"
 date: "`r Sys.Date()`"
-output: html_document
+output: slidy_presentation
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r echo = F, message=FALSE}
 library(tidyverse)
 library('knitr')
-library('quantreg')
+#library('quantreg')
 Movie_1000 <- read_csv('Highest_Holywood_Grossing_Movies.csv')
 My_imdb <- read_csv('imdb_top_1000.csv')
 My_imdb$Released_Year <- as.numeric(My_imdb$Released_Year)
@@ -27,7 +27,7 @@ My_imdb <- My_imdb %>%
          Released_Year = as.numeric(Released_Year))
 
 #movie_data <- full_join(Movie_1000, My_imdb, join_by("Title" == "Series_Title")) %>% arrange(Title)
-movie_data_inner <- inner_join(Movie_1000, My_imdb, join_by("Title" == "Series_Title")) %>% filter(Released_Year > 1986)
+movie_data_inner <- inner_join(Movie_1000, My_imdb, join_by("Title" == "Series_Title")) %>% filter(Released_Year > 1994) %>% na.omit()
 
 
 movie_data_inner <- rename(movie_data_inner,'domestic_sales' = 'Domestic Sales (in $)')
@@ -42,9 +42,11 @@ movie_data_inner$domestic_opening <- as.numeric(movie_data_inner$domestic_openin
 
 ```
 
-***Release Dates***
+---
 
-```{r echo = F, message=FALSE, fig.width=10, fig.align='center'}
+Number of Movies Released Over the Last 30 Years per Year
+---
+```{r echo = F, message=FALSE, fig.align='center'}
 #movie_data_inner %>% group_by(Year,Released_Year) %>% summarise(n =n()) %>% arrange(-n) %>% 
   #na.omit()
 
@@ -58,110 +60,171 @@ library(kableExtra)
 kable(released, col.names = c('Year Released', 'Movies')) %>%  kable_styling(full_width = F, position = "center")
 ```
 
-***Sales per Release Year***
 
-```{r echo = F, message=FALSE, fig.width=10, fig.align='center'}
-movie_data_inner %>% 
-  ggplot()+
-  aes(domestic_sales, international_sales, color = Released_Year)+
-  geom_point(na.rm = TRUE, alpha = .5)+
-  labs(title = 'Sales According to Release Year', x = 'Domestic Sales', y = 'International Sales')
-
-movie_data_inner %>% 
-  ggplot() +
-  aes(x = Released_Year,
-      y = domestic_sales) +
-  geom_col(na.rm = TRUE, alpha = .5)+
-  labs(title = 'Domestic Sales by Release Year', x = 'Year Released', y = 'Domestic Sales')
-
-movie_data_inner %>% 
-  ggplot() +
-  aes(x = Released_Year,
-      y = international_sales) +
-  geom_col(na.rm = TRUE, alpha = .5)+
-  labs(title = 'International Sales by Release Year', x = 'Year Released', y = 'International Sales')
-
-
-
+```{r echo = F, message=FALSE, fig.align='center'}
 movie_data_inner %>% ggplot(aes(x = Released_Year)) + geom_histogram()+
 labs(title = 'Movies Released per Year', x = 'Year Released', y = 'Number of Movies')
 
 ```
 
-***Sales per Budget***
+---
 
-```{r echo = F, message=FALSE, fig.align='center',fig.width=10}
+Sales per Release Year
+---
+```{r echo = F, message=FALSE, fig.align='center'}
+
+movie_data_inner %>% 
+  ggplot()+
+  aes(domestic_sales, international_sales, color = Released_Year)+
+  geom_point(na.rm = TRUE, alpha = .5)+
+  labs(title = 'Sales According to Release Year', x = 'Domestic Sales', y = 'International Sales')
+```
+
+---
+
+Domestic Sales
+---
+```{r echo = F, message=FALSE, fig.align='center'}
+movie_data_inner %>% 
+  ggplot() +
+  aes(x = Released_Year,
+      y = domestic_sales) +
+  geom_col(na.rm = TRUE)+
+  labs(title = 'Domestic Sales by Release Year', x = 'Year Released', y = 'Domestic Sales')
+```
+
+---
+
+International Sales
+---
+```{r echo = F, message=FALSE, fig.align='center'}
+movie_data_inner %>% 
+  ggplot() +
+  aes(x = Released_Year,
+      y = international_sales) +
+  geom_col(na.rm = TRUE)+
+  labs(title = 'International Sales by Release Year', x = 'Year Released', y = 'International Sales')
+```
+
+---
+
+Sales per Budget
+---
+```{r echo = F, message=FALSE, fig.align='center'}
 movie_data_inner %>% 
   ggplot()+
   aes(domestic_sales, international_sales, color = budget)+
-  geom_point(na.rm = TRUE, alpha = .5)+
-  labs(title = 'Correlation of Sales to Budget', x = 'Domestic Sales', y = 'International Sales' )
+  geom_point(na.rm = TRUE, alpha = .5, color = 'red')+
+  labs(title = 'Correlation of of World Wide Sales to Budget', x = 'Domestic Sales', y = 'International Sales' )
+```
 
+---
+
+Domestic Sales and Budget
+---
+```{r echo = F, message=FALSE, fig.align='center'}
 movie_data_inner %>% 
   ggplot() +
   aes(x = budget,
       y = domestic_sales) +
-  geom_point(na.rm = TRUE, alpha = .5)+
+  geom_point(na.rm = TRUE, alpha = .5, color = 'red')+
   labs(title = 'Correlation of Domestic Sales to Budget', x = 'Budget', y = 'Domestic Sales' )
+```
 
+---
+
+International Sales and Budget
+---
+```{r echo = F, message=FALSE, fig.align='center'}
 movie_data_inner %>% 
   ggplot() +
   aes(x = budget,
       y = international_sales) +
-  geom_point(na.rm = TRUE, alpha = .5)+
+  geom_point(na.rm = TRUE, alpha = .5, color = 'red')+
   labs(title = 'Correlation of International Sales to Budget', x = 'Budget', y = 'International Sales' )
 
 ```
 
-***Domestic vs. International Sales***
+---
 
-```{r echo = F, message=FALSE, fig.width=10, fig.align='center'}
+Domestic vs. International Sales
+---
+```{r echo = F, message=FALSE, fig.align='center'}
 movie_data_inner %>% 
   ggplot() +
   aes(x = domestic_sales,
       y = international_sales) +
   geom_smooth(na.rm = TRUE) +
   labs(title = 'How Do International Sales Compare to Domestic Sales', x = 'Domestic Sales', y =   'International Sales')
-  
-movie_data_inner %>% 
-  ggplot()+
-  aes(domestic_sales,domestic_opening)+
-  geom_point(na.rm = TRUE) +
-  labs(title = 'Opening Weekend vs. Total Sales', x = 'Domestic Sales', y = 'Domestic Opening' )
 
 sales_kabble <- movie_data_inner %>% select(Title, domestic_sales, international_sales) %>% head(5)
 
 kable(sales_kabble, col.names = c('Movie Name','Domestic Sales',' International sales'))
+```
+
+
+---
+
+Correlation Opening Weekend and Total Sales
+---
+```{r echo = F, message=FALSE, fig.align='center'}
+movie_data_inner %>% 
+  ggplot()+
+  aes(domestic_opening,domestic_sales)+
+  geom_point(na.rm = TRUE, alpha = .5, color = 'red') +
+  labs(title = 'Opening Weekend vs. Total Sales', x = 'Domestic Opening', y = 'Domestic Sales' )
   
 ```
 
-## Distribution
 
-```{r echo = F, message=FALSE, fig.width=15, fig.align='center'}
+---
+
+Distribution
+---
+```{r echo = F, message=FALSE, fig.align='center'}
 movie_data_inner %>% select(world_wide_sales,Distributor) %>% 
   ggplot()+
   aes(world_wide_sales, y = reorder(Distributor, world_wide_sales, sum))+
   geom_col()+
   labs(title = 'World Wide Sales Per Distributor',x='World Wide Sales', y= 'Distributor')
+```
 
-highest_sales_per_year <- movie_data_inner %>% select(Distributor,Released_Year, world_wide_sales) %>% group_by(Distributor) %>% arrange(-Released_Year, -world_wide_sales) %>% head(15)
+
+---
+
+Top 10 Sales per Year per Distributor
+---
+```{r echo = F, message=FALSE,fig.align='center'}
+highest_sales_per_year <- movie_data_inner %>% select(Distributor,Released_Year, world_wide_sales) %>% group_by(Distributor) %>% arrange(-Released_Year, -world_wide_sales) %>% head(10)
   
 kable(highest_sales_per_year, col.names = c('Distributor','Year Released','Total Sales'))
+```
 
-movie_data_inner %>% group_by(Director) %>% head(15) %>% 
+---
+
+Top Directors per Distributor
+---
+```{r echo = F, message=FALSE, fig.width=11,fig.align='center'}
+movie_data_inner %>% group_by(Director) %>% head(10) %>% 
   ggplot()+
   aes(Director, fill = Distributor)+
   geom_bar()+
-  labs(title = 'Top 15 Directors Per Distributor', y= 'Number of Movies Directed')
+  labs(title = 'Top 10 Directors Per Distributor', y= 'Number of Movies Directed')
 
 
 ```
 
-```{r echo = F, message=FALSE, fig.width=15}
 
-movie_data_inner %>% tail(15) %>% na.omit()%>% 
+
+---
+
+Lowest Sales of Distributors
+---
+```{r echo = F, message=FALSE, fig.align='center'}
+
+movie_data_inner %>% tail(10)%>% 
   ggplot(aes(world_wide_sales, color = Distributor)) + 
   geom_density()+
-  labs(title = 'Lowest 15 Sales by Distributor',x='World Wide Sales')
+  labs(title = 'Lowest 10 Sales by Distributor',x='World Wide Sales')
   
 ```
