@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
  
 ```
 
-```{r echo = F, message=FALSE}
+```{r echo = F, message=FALSE, warning=FALSE}
 library(tidyverse)
 library('knitr')
 #library('quantreg')
@@ -46,7 +46,7 @@ movie_data_inner$domestic_opening <- as.numeric(movie_data_inner$domestic_openin
 
 Number of Movies Released Over the Last 30 Years per Year
 ---
-```{r echo = F, message=FALSE, fig.align='center'}
+```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
 #movie_data_inner %>% group_by(Year,Released_Year) %>% summarise(n =n()) %>% arrange(-n) %>% 
   #na.omit()
 
@@ -57,11 +57,12 @@ released <- movie_data_inner %>%
   na.omit()
 
 library(kableExtra)
-kable(released, col.names = c('Year Released', 'Movies')) %>%  kable_styling(full_width = F, position = "center")
+kable(released, col.names = c('Year Released', 'Movies'))%>%  
+  kable_styling(full_width = F, position = "center")
 ```
 
 
-```{r echo = F, message=FALSE, fig.align='center'}
+```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
 movie_data_inner %>% ggplot(aes(x = Released_Year)) + geom_histogram()+
 labs(title = 'Movies Released per Year', x = 'Year Released', y = 'Number of Movies')
 
@@ -71,7 +72,7 @@ labs(title = 'Movies Released per Year', x = 'Year Released', y = 'Number of Mov
 
 Sales per Release Year
 ---
-```{r echo = F, message=FALSE, fig.align='center'}
+```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
 
 movie_data_inner %>% 
   ggplot()+
@@ -84,7 +85,7 @@ movie_data_inner %>%
 
 Domestic Sales
 ---
-```{r echo = F, message=FALSE, fig.align='center'}
+```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
 movie_data_inner %>% 
   ggplot() +
   aes(x = Released_Year,
@@ -97,7 +98,7 @@ movie_data_inner %>%
 
 International Sales
 ---
-```{r echo = F, message=FALSE, fig.align='center'}
+```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
 movie_data_inner %>% 
   ggplot() +
   aes(x = Released_Year,
@@ -110,7 +111,7 @@ movie_data_inner %>%
 
 Sales per Budget
 ---
-```{r echo = F, message=FALSE, fig.align='center'}
+```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
 movie_data_inner %>% 
   ggplot()+
   aes(domestic_sales, international_sales, color = budget)+
@@ -122,7 +123,7 @@ movie_data_inner %>%
 
 Domestic Sales and Budget
 ---
-```{r echo = F, message=FALSE, fig.align='center'}
+```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
 movie_data_inner %>% 
   ggplot() +
   aes(x = budget,
@@ -135,7 +136,7 @@ movie_data_inner %>%
 
 International Sales and Budget
 ---
-```{r echo = F, message=FALSE, fig.align='center'}
+```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
 movie_data_inner %>% 
   ggplot() +
   aes(x = budget,
@@ -149,7 +150,7 @@ movie_data_inner %>%
 
 Domestic vs. International Sales
 ---
-```{r echo = F, message=FALSE, fig.align='center'}
+```{r echo = F, message=FALSE, fig.align='center', warning=FALSE}
 movie_data_inner %>% 
   ggplot() +
   aes(x = domestic_sales,
@@ -167,7 +168,7 @@ kable(sales_kabble, col.names = c('Movie Name','Domestic Sales',' International 
 
 Correlation Opening Weekend and Total Sales
 ---
-```{r echo = F, message=FALSE, fig.align='center'}
+```{r echo = F, message=FALSE, fig.align='center', warning=FALSE}
 movie_data_inner %>% 
   ggplot()+
   aes(domestic_opening,domestic_sales)+
@@ -181,7 +182,7 @@ movie_data_inner %>%
 
 Distribution
 ---
-```{r echo = F, message=FALSE, fig.align='center'}
+```{r echo = F, message=FALSE, fig.align='center', warning=FALSE}
 movie_data_inner %>% select(world_wide_sales,Distributor) %>% 
   ggplot()+
   aes(world_wide_sales, y = reorder(Distributor, world_wide_sales, sum))+
@@ -194,7 +195,7 @@ movie_data_inner %>% select(world_wide_sales,Distributor) %>%
 
 Top 10 Sales per Year per Distributor
 ---
-```{r echo = F, message=FALSE,fig.align='center'}
+```{r echo = F, message=FALSE,fig.align='center', warning=FALSE}
 highest_sales_per_year <- movie_data_inner %>% select(Distributor,Released_Year, world_wide_sales) %>% group_by(Distributor) %>% arrange(-Released_Year, -world_wide_sales) %>% head(10)
   
 kable(highest_sales_per_year, col.names = c('Distributor','Year Released','Total Sales'))
@@ -204,7 +205,7 @@ kable(highest_sales_per_year, col.names = c('Distributor','Year Released','Total
 
 Top Directors per Distributor
 ---
-```{r echo = F, message=FALSE, fig.width=11,fig.align='center'}
+```{r echo = F, message=FALSE, fig.width=11,fig.align='center', warning=FALSE}
 movie_data_inner %>% group_by(Director) %>% head(10) %>% 
   ggplot()+
   aes(Director, fill = Distributor)+
@@ -220,7 +221,7 @@ movie_data_inner %>% group_by(Director) %>% head(10) %>%
 
 Lowest Sales of Distributors
 ---
-```{r echo = F, message=FALSE, fig.align='center'}
+```{r echo = F, message=FALSE, fig.align='center', warning=FALSE}
 
 movie_data_inner %>% tail(10)%>% 
   ggplot(aes(world_wide_sales, color = Distributor)) + 
