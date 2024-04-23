@@ -27,7 +27,7 @@ My_imdb <- My_imdb %>%
          Released_Year = as.numeric(Released_Year))
 
 #movie_data <- full_join(Movie_1000, My_imdb, join_by("Title" == "Series_Title")) %>% arrange(Title)
-movie_data_inner <- inner_join(Movie_1000, My_imdb, join_by("Title" == "Series_Title")) %>% filter(Released_Year > 1994) %>% na.omit()
+movie_data_inner <- inner_join(Movie_1000, My_imdb, join_by("Title" == "Series_Title")) %>% filter(Released_Year >= 1994) %>% na.omit()
 
 
 movie_data_inner <- rename(movie_data_inner,'domestic_sales' = 'Domestic Sales (in $)')
@@ -158,7 +158,7 @@ movie_data_inner %>%
   geom_smooth(na.rm = TRUE) +
   labs(title = 'How Do International Sales Compare to Domestic Sales', x = 'Domestic Sales', y =   'International Sales')
 
-sales_kabble <- movie_data_inner %>% select(Title, domestic_sales, international_sales) %>% head(5)
+sales_kabble <- movie_data_inner %>% select(Title, domestic_sales, international_sales) %>% head(10)
 
 kable(sales_kabble, col.names = c('Movie Name','Domestic Sales',' International sales'))
 ```
