@@ -116,7 +116,7 @@ movie_data_inner %>%
   ggplot()+
   aes(domestic_sales, international_sales, color = budget)+
   geom_point(na.rm = TRUE, alpha = .5, color = 'red')+
-  labs(title = 'Correlation of of World Wide Sales to Budget', x = 'Domestic Sales', y = 'International Sales' )
+  labs(title = 'Correlation of World Wide Sales to Budget', x = 'Domestic Sales', y = 'International Sales' )
 ```
 
 ---
