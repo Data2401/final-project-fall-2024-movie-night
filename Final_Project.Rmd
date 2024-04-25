@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r echo = F, message=FALSE, warning=FALSE}
 library(tidyverse)
 library('knitr')
+library(plotly)
 #library('quantreg')
 Movie_1000 <- read_csv('Highest_Holywood_Grossing_Movies.csv')
 My_imdb <- read_csv('imdb_top_1000.csv')
@@ -38,7 +39,6 @@ movie_data_inner <- rename(movie_data_inner, 'world_wide_sales' ='World Wide Sal
 movie_data_inner$domestic_opening <- as.numeric(movie_data_inner$domestic_opening)
 
 #glimpse(movie_data_inner)
-
 
 ```
 
@@ -79,6 +79,8 @@ movie_data_inner %>%
   aes(domestic_sales, international_sales, color = Released_Year)+
   geom_point(na.rm = TRUE, alpha = .5)+
   labs(title = 'Sales According to Release Year', x = 'Domestic Sales', y = 'International Sales')
+  ggplotly()
+
 ```
 
 ---
@@ -115,8 +117,9 @@ Sales per Budget
 movie_data_inner %>% 
   ggplot()+
   aes(domestic_sales, international_sales, color = budget)+
-  geom_point(na.rm = TRUE, alpha = .5, color = 'red')+
+  geom_point(na.rm = TRUE, alpha = .5)+
   labs(title = 'Correlation of World Wide Sales to Budget', x = 'Domestic Sales', y = 'International Sales' )
+  ggplotly()
 ```
 
 ---
@@ -127,7 +130,8 @@ Domestic Sales and Budget
 movie_data_inner %>% 
   ggplot() +
   aes(x = budget,
-      y = domestic_sales) +
+      y = domestic_sales,
+      color = ) +
   geom_point(na.rm = TRUE, alpha = .5, color = 'red')+
   labs(title = 'Correlation of Domestic Sales to Budget', x = 'Budget', y = 'Domestic Sales' )
 ```
@@ -155,8 +159,10 @@ movie_data_inner %>%
   ggplot() +
   aes(x = domestic_sales,
       y = international_sales) +
+  geom_point()+
   geom_smooth(na.rm = TRUE) +
   labs(title = 'How Do International Sales Compare to Domestic Sales', x = 'Domestic Sales', y =   'International Sales')
+  ggplotly()
 
 sales_kabble <- movie_data_inner %>% select(Title, domestic_sales, international_sales) %>% head(10)
 
