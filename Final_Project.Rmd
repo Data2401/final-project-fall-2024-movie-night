@@ -100,9 +100,10 @@ labs(title = 'Movies Released per Year', x = 'Year Released', y = 'Number of Mov
 
 ------------------------------------------------------------------------
 
-***Now that we know what years released the most movies we wanted to plot both domestic and international sales per year. We were expecting the data to show us the same trends.***
+***Now that we know what years released the most movies, we wanted to plot domestic and international sales yearly. We were expecting the data to show us the same trends.***
 
-## Sales per Release Year
+***
+
 
 ```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
 
@@ -128,14 +129,14 @@ movie_data_inner %>%
   labs(title = 'Domestic Sales by Release Year', x = 'Year Released', y = 'Domestic Sales')
 ```
 
-It was interesting to find that 2009 was the highest grossing year in sales domestically followed 2013, even though we had the most movie releases in 2012.
+Interestingly, 2009 was the highest-grossing year in domestic sales, followed by 2013, even though we had the most movie releases in 2012.
 
 ------------------------------------------------------------------------
 
 When we took a look at international sales...
 
-## International Sales
-
+***
+#### International Sales
 ```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
 movie_data_inner %>% 
   ggplot() +
@@ -149,7 +150,7 @@ The data showed 2014 and 2009 as the most lucrative year in sales.
 
 ------------------------------------------------------------------------
 
-Noting the difference in movie release years versus the highest grossing years prompted us to look into sales per budgets.
+Noting the difference in movie release years versus the highest-grossing years prompted us to look into sales per budget.
 
 ```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
 movie_data_inner %>% 
@@ -161,10 +162,9 @@ movie_data_inner %>%
 
 ------------------------------------------------------------------------
 
-In order identify trends, we felt it would be prudent to look more closely into the domestic sales and budget.
+We decided to look more closely into domestic sales and budgets to identify trends.
 
 #### Domestic sales and budget
-
 ```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
 movie_data_inner %>% 
   ggplot() +
@@ -174,7 +174,7 @@ movie_data_inner %>%
   labs(title = 'Correlation of Domestic Sales to Budget', x = 'Budget', y = 'Domestic Sales' )
 ```
 
-We found that a budget range could be identified as a goal for the industry to shoot for. There were some outliers but the data indicated that there was no need to be over budget in order to gross more sales.
+Our findings suggest that a specific budget range could be identified as a strategic goal for the industry. While there were some outliers, the data indicated that there is no need to exceed the budget to achieve higher sales.
 
 ------------------------------------------------------------------------
 
@@ -194,7 +194,7 @@ movie_data_inner %>%
 
 ------------------------------------------------------------------------
 
-Next, we wanted to compare domestic sales to internatnal sales.
+Next, we wanted to compare domestic sales to international sales.
 
 ```{r echo = F, message=FALSE, fig.align='center', warning=FALSE}
 movie_data_inner %>% 
@@ -208,7 +208,7 @@ sales_kabble <- movie_data_inner %>% select(Title, domestic_sales, international
 
 kable(sales_kabble, col.names = c('Movie Name','Domestic Sales',' International sales'))
 
-------------------------------------------------------------------------
+
 ## Correlation Opening Weekend and Total Sales
 
 movie_data_inner %>% 
@@ -221,7 +221,7 @@ movie_data_inner %>%
 
 ------------------------------------------------------------------------
 
-Movies depend on there distribution. So, we wanted to identify out largest distributor.
+Movies depend on their distribution. So, we wanted to identify our largest distributor.
 
 #### Distribution
 
@@ -237,21 +237,24 @@ We concluded that Walt Disney Studios was our largest worldwide distributor.
 
 ------------------------------------------------------------------------
 
-We wanted to know which year each distributor had reported the highest sales. To narrow our search we limited it dataset to only list the top 10 sales.
+We wanted to know which year each distributor had reported the highest sales. To narrow our search, we limited the dataset to only list the top 10 sales.
 
 #### Top 10 Sales per Year per Distributor
+
 ```{r echo = F, message=FALSE,fig.align='center', warning=FALSE}
 highest_sales_per_year <- movie_data_inner %>% select(Distributor,Released_Year, world_wide_sales) %>% group_by(Distributor) %>% arrange(-Released_Year, -world_wide_sales) %>% head(10)
   
 kable(highest_sales_per_year, col.names = c('Distributor','Year Released','Total Sales'))
 ```
-Walt Disney and other distributors showed their most profitable year in 2019. 
+
+Walt Disney and other distributors showed their most profitable year in 2019.
 
 ------------------------------------------------------------------------
 
-As we continued to try to identify what can make a movie more profitable we decided to take a look at the top directors per distributor. We wanted to know how many movies each director was producing and who they were using as their distributor.
+As we tried to identify what could make a movie more profitable, we decided to look at the top directors per distributor. We wanted to know how many movies each director produced and who they used as their distributor.
 
 #### Top Directors per Distributor
+
 ```{r echo = F, message=FALSE, fig.width=11,fig.align='center', warning=FALSE}
 movie_data_inner %>% group_by(Director) %>% head(10) %>% 
   ggplot()+
@@ -261,7 +264,8 @@ movie_data_inner %>% group_by(Director) %>% head(10) %>%
 
 
 ```
-It was not a surprise to find Anthony Russo, who used Walt Disney studios as his distributor, direct the most films. James Cameron came in second using both Twenty Century Fox and Paramont Pictures to distribute his films.
+
+It was unsurprising to find Anthony Russo, who used Walt Disney Studios as his distributor, directing most of the films. James Cameron came in second, using Twenty Century Fox and Paramount Pictures to distribute his films.
 
 ------------------------------------------------------------------------
 
@@ -275,10 +279,12 @@ movie_data_inner %>% tail(10)%>%
   labs(title = 'Lowest 10 Sales by Distributor',x='World Wide Sales')
   
 ```
-***
+
+------------------------------------------------------------------------
 
 ### Summary
 
-In our analysis we found that the number of movies you release in year will not directly indicate a high grossing year in movie sales both internationally or domestically. We also concluded that staying within the budget is the most financially beneficial practice since being over budget did not correlate to higher grossing sales. The number of films a director produces is just as important as who they are using to distribute the film. Walt Disney studios has the farthest reach and therefore we can conclude is a great option for distribution. 
+In our analysis, we found that the number of movies released in the year will not directly indicate a high grossing year in movie sales both internationally or domestically. We also concluded that staying within the budget is the most financially beneficial practice since being over budget did not correlate to higher grossing sales. The number of films a director produces is as significant as who they use to distribute the film. Walt Disney Studios has the farthest reach; therefore, it is an excellent option for distribution.
 
-It is important to take into consideration that the data did not measure or take into account numerous factors beyond anyone's control, like weather, social or economical factors that have impacted movies sales.
+It is important to consider that the data did not measure or account for numerous factors beyond anyone's control, like weather, social, or economic factors that have impacted movie sales.
+
