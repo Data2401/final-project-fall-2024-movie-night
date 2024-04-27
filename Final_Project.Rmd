@@ -2,7 +2,7 @@
 title: "Movie Night"
 author: "Kelly Thackeray, Judy Camarena"
 date: "`r Sys.Date()`"
-output: slidy_presentation
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
