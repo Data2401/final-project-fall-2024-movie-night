@@ -13,7 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r echo = F, message=FALSE, warning=FALSE}
 library(tidyverse)
 library('knitr')
-#library('quantreg')
+library(plotly)
+library(kableExtra)
 Movie_1000 <- read_csv('Highest_Holywood_Grossing_Movies.csv')
 My_imdb <- read_csv('imdb_top_1000.csv')
 My_imdb$Released_Year <- as.numeric(My_imdb$Released_Year)
@@ -46,7 +47,10 @@ movie_data_inner$domestic_opening <- as.numeric(movie_data_inner$domestic_openin
 
 The datasets used for this report are CSV files from Kaggle named IMDB Movie dataset from and Highest_Holywood_Grossing_Movies. The datasets reflect movie sales.
 
-The links to the data imdb_top_1000.csv and Highest_Holywood_Grossing_Movies.csv
+The links to the data:
+https://www.kaggle.com/datasets/harshitshankhdhar/imdb-dataset-of-top-1000-movies-and-tv-shows
+https://www.kaggle.com/datasets/sanjeetsinghnaik/top-1000-highest-grossing-movies
+
 
 ------------------------------------------------------------------------
 
@@ -87,13 +91,13 @@ released <- movie_data_inner %>%
 
 library(kableExtra)
 kable(released, col.names = c('Year Released', 'Movies'))%>%  
-  kable_styling(full_width = F, position = "center")
+  kable_styling(full_width = FALSE)
 ```
 
 It is indicated that 2009, 2010, and 2014 released the most movies per year.
 
 ```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
-movie_data_inner %>% ggplot(aes(x = Released_Year)) + geom_histogram()+
+movie_data_inner %>% ggplot(aes(x = Released_Year)) + geom_histogram(fill = 'blue')+
 labs(title = 'Movies Released per Year', x = 'Year Released', y = 'Number of Movies')
 
 ```
@@ -107,11 +111,12 @@ labs(title = 'Movies Released per Year', x = 'Year Released', y = 'Number of Mov
 
 ```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
 
-movie_data_inner %>% 
-  ggplot()+
-  aes(domestic_sales, international_sales, color = Released_Year)+
+  sales_year <- movie_data_inner %>% 
+  ggplot(aes(domestic_sales, international_sales, color = Released_Year))+
   geom_point(na.rm = TRUE, alpha = .5)+
   labs(title = 'Sales According to Release Year', x = 'Domestic Sales', y = 'International Sales')
+  ggplotly()
+  
 ```
 
 The data told a different story.
@@ -121,12 +126,13 @@ The data told a different story.
 We investigated further by only looking into domestic sales.
 
 ```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
-movie_data_inner %>% 
-  ggplot() +
-  aes(x = Released_Year,
-      y = domestic_sales) +
+ domestic_sales_year <- movie_data_inner %>% 
+  ggplot(aes(x = Released_Year,
+      y = domestic_sales,
+      fill = Released_Year)) +
   geom_col(na.rm = TRUE)+
   labs(title = 'Domestic Sales by Release Year', x = 'Year Released', y = 'Domestic Sales')
+  ggplotly()
 ```
 
 Interestingly, 2009 was the highest-grossing year in domestic sales, followed by 2013, even though we had the most movie releases in 2012.
@@ -138,26 +144,28 @@ When we took a look at international sales...
 ***
 #### International Sales
 ```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
-movie_data_inner %>% 
-  ggplot() +
-  aes(x = Released_Year,
-      y = international_sales) +
+intl_sales_year <- movie_data_inner %>% 
+  ggplot(aes(x = Released_Year,
+      y = international_sales,
+      fill = Released_Year)) +
   geom_col(na.rm = TRUE)+
   labs(title = 'International Sales by Release Year', x = 'Year Released', y = 'International Sales')
+  ggplotly()
 ```
 
 The data showed 2014 and 2009 as the most lucrative year in sales.
 
 ------------------------------------------------------------------------
 
-Noting the difference in movie release years versus the highest-grossing years prompted us to look into sales per budget.
+Noting the difference in movie release years versus the highest-grossing years prompted us to look into which distributor had higher sales per budget.
 
 ```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
-movie_data_inner %>% 
-  ggplot()+
-  aes(domestic_sales, international_sales, color = budget)+
-  geom_point(na.rm = TRUE, alpha = .5, color = 'red')+
-  labs(title = 'Correlation of World Wide Sales to Budget', x = 'Domestic Sales', y = 'International Sales' )
+sales_title <- movie_data_inner %>% 
+    ggplot(aes(domestic_sales, international_sales, fill = budget))+
+  geom_point(na.rm = TRUE, alpha = .5, color = 'blue')+
+  labs(title = 'Correlation of World Wide Sales to Budget', x = 'Domestic Sales', y = 'International Sales')
+  ggplotly()
+
 ```
 
 ------------------------------------------------------------------------
@@ -165,13 +173,15 @@ movie_data_inner %>%
 We decided to look more closely into domestic sales and budgets to identify trends.
 
 #### Domestic sales and budget
-```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
-movie_data_inner %>% 
+```{r echo = F, message=FALSE,fig.align='center', warning=FALSE}
+domestic_budget <- movie_data_inner %>% 
   ggplot() +
   aes(x = budget,
-      y = domestic_sales) +
-  geom_point(na.rm = TRUE, alpha = .5, color = 'red')+
+      y = domestic_sales,
+      fill = Title) +
+  geom_point(na.rm = TRUE, alpha = .5, color = 'blue')+
   labs(title = 'Correlation of Domestic Sales to Budget', x = 'Budget', y = 'Domestic Sales' )
+  ggplotly()
 ```
 
 Our findings suggest that a specific budget range could be identified as a strategic goal for the industry. While there were some outliers, the data indicated that there is no need to exceed the budget to achieve higher sales.
@@ -182,13 +192,15 @@ When we plotted the same data for international sales and budgets similar conclu
 
 #### International Sales and Budget
 
-```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
-movie_data_inner %>% 
+```{r echo = F, message=FALSE,fig.align='center', warning=FALSE}
+intl_sales_budget <- movie_data_inner %>% 
   ggplot() +
   aes(x = budget,
-      y = international_sales) +
-  geom_point(na.rm = TRUE, alpha = .5, color = 'red')+
+      y = international_sales,
+      fill = Title) +
+  geom_point(na.rm = TRUE, alpha = .5, color = 'blue')+
   labs(title = 'Correlation of International Sales to Budget', x = 'Budget', y = 'International Sales' )
+  ggplotly()
 
 ```
 
@@ -196,26 +208,39 @@ movie_data_inner %>%
 
 Next, we wanted to compare domestic sales to international sales.
 
-```{r echo = F, message=FALSE, fig.align='center', warning=FALSE}
-movie_data_inner %>% 
+```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
+sales_title <- movie_data_inner %>% 
   ggplot() +
   aes(x = domestic_sales,
-      y = international_sales) +
+      y = international_sales,
+      fill = Title) +
+  geom_point()+
   geom_smooth(na.rm = TRUE) +
-  labs(title = 'How Do International Sales Compare to Domestic Sales', x = 'Domestic Sales', y =   'International Sales')
+  labs(title = 'How Do International Sales Compare to Domestic Sales', x = 'Domestic Sales', 
+  y = 'International Sales')+
+  theme(legend.justification = 'right', legend.position = 'right')
+  ggplotly()
+ 
 
-sales_kabble <- movie_data_inner %>% select(Title, domestic_sales, international_sales) %>% head(10)
 
-kable(sales_kabble, col.names = c('Movie Name','Domestic Sales',' International sales'))
+sales_kabble <- movie_data_inner %>% select(Title, domestic_sales, international_sales) %>% head(10) %>% arrange(Title)
+
+kable(sales_kabble, col.names = c('Movie Name','Domestic Sales',' International sales')) %>% 
+  kable_styling(full_width = FALSE)
+
+```
 
 
 ## Correlation Opening Weekend and Total Sales
 
-movie_data_inner %>% 
+
+```{r echo = F, message=FALSE, fig.align='center',warning=FALSE}
+opening_weekend <- movie_data_inner %>% 
   ggplot()+
-  aes(domestic_opening,domestic_sales)+
-  geom_point(na.rm = TRUE, alpha = .5, color = 'red') +
+  aes(domestic_opening,domestic_sales, fill = Title)+
+  geom_point(na.rm = TRUE, alpha = .5, color = 'blue') +
   labs(title = 'Opening Weekend vs. Total Sales', x = 'Domestic Opening', y = 'Domestic Sales' )
+ggplotly()
   
 ```
 
@@ -226,11 +251,12 @@ Movies depend on their distribution. So, we wanted to identify our largest distr
 #### Distribution
 
 ```{r echo = F, message=FALSE, fig.align='center', warning=FALSE}
-movie_data_inner %>% select(world_wide_sales,Distributor) %>% 
+ movie_data_inner %>% select(world_wide_sales,Distributor) %>% 
   ggplot()+
   aes(world_wide_sales, y = reorder(Distributor, world_wide_sales, sum))+
-  geom_col()+
+  geom_col(na.rm = TRUE)+
   labs(title = 'World Wide Sales Per Distributor',x='World Wide Sales', y= 'Distributor')
+
 ```
 
 We concluded that Walt Disney Studios was our largest worldwide distributor.
@@ -242,9 +268,10 @@ We wanted to know which year each distributor had reported the highest sales. To
 #### Top 10 Sales per Year per Distributor
 
 ```{r echo = F, message=FALSE,fig.align='center', warning=FALSE}
-highest_sales_per_year <- movie_data_inner %>% select(Distributor,Released_Year, world_wide_sales) %>% group_by(Distributor) %>% arrange(-Released_Year, -world_wide_sales) %>% head(10)
+highest_sales_per_year <- movie_data_inner %>% select(Distributor,Released_Year, world_wide_sales) %>% group_by(Distributor) %>% arrange(-Released_Year, -world_wide_sales) %>% slice_head(n = 10)
   
-kable(highest_sales_per_year, col.names = c('Distributor','Year Released','Total Sales'))
+kable(highest_sales_per_year, col.names = c('Distributor','Year Released','Total Sales')) %>% 
+  kable_styling(full_width = FALSE)
 ```
 
 Walt Disney and other distributors showed their most profitable year in 2019.
@@ -256,7 +283,7 @@ As we tried to identify what could make a movie more profitable, we decided to l
 #### Top Directors per Distributor
 
 ```{r echo = F, message=FALSE, fig.width=11,fig.align='center', warning=FALSE}
-movie_data_inner %>% group_by(Director) %>% head(10) %>% 
+movie_data_inner %>% group_by(Director)%>% head(10) %>% 
   ggplot()+
   aes(Director, fill = Distributor)+
   geom_bar()+
@@ -273,11 +300,11 @@ It was unsurprising to find Anthony Russo, who used Walt Disney Studios as his d
 
 ```{r echo = F, message=FALSE, fig.align='center', warning=FALSE}
 
-movie_data_inner %>% tail(10)%>% 
-  ggplot(aes(world_wide_sales, color = Distributor)) + 
-  geom_density()+
-  labs(title = 'Lowest 10 Sales by Distributor',x='World Wide Sales')
-  
+movie_data_inner %>% tail(10)%>%
+  ggplot(aes(world_wide_sales,y = reorder(Title, world_wide_sales), fill = Distributor)) + 
+  geom_col()+
+  labs(title = 'Lowest 10 Sales by Distributor',x = 'Total World Wide Sales', y = 'Title')
+
 ```
 
 ------------------------------------------------------------------------
